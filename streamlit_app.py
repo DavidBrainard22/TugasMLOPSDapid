@@ -635,14 +635,3 @@ with col_bottom3:
         </div>
     </div>
     """, unsafe_allow_html=True)
-
-# =======================
-# COPYRIGHT
-# =======================
-st.markdown("""
-<div class="copyright">
-    <div style="font-size: 16px; font-weight: 700; color: #dc2626; margin-bottom: 8px;">Diabetes Prediction System</div>
-    <div style="font-size: 14px; color: #64748b;">©️ 2024 All Rights Reserved | Medical AI Diagnostics</div>
-    <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Advanced Healthcare Analytics for Better Patient Outcomes</div>
-</div>
-""", unsafe_allow_html=True)
