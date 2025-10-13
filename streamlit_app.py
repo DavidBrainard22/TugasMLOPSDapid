@@ -177,19 +177,6 @@ st.markdown("""
         border-left: 5px solid #dc2626;
         height: 100%;
     }
-    
-    /* Copyright styling */
-    .copyright {
-        text-align: center;
-        margin-top: 40px;
-        padding: 20px;
-        color: #64748b;
-        font-size: 14px;
-        font-weight: 500;
-        border-top: 2px solid #e2e8f0;
-        background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-        border-radius: 8px;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -276,52 +263,11 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =======================
-# SYSTEM STATUS
-# =======================
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    st.markdown("""
-    <div class="status-card">
-        <div style="font-size: 14px; color: #64748b; margin-bottom: 8px; font-weight: 500;">System Status</div>
-        <div style="font-size: 18px; font-weight: 700; color: #059669;">🟢 Active & Optimal</div>
-        <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Real-time Monitoring</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col2:
-    st.markdown("""
-    <div class="status-card">
-        <div style="font-size: 14px; color: #64748b; margin-bottom: 8px; font-weight: 500;">Model Version</div>
-        <div style="font-size: 18px; font-weight: 700; color: #dc2626;">v3.1.0</div>
-        <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Ensemble Certified</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col3:
-    st.markdown("""
-    <div class="status-card">
-        <div style="font-size: 14px; color: #64748b; margin-bottom: 8px; font-weight: 500;">Dataset</div>
-        <div style="font-size: 18px; font-weight: 700; color: #7c3aed;">1,000 Patients</div>
-        <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Medical Records</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col4:
-    st.markdown("""
-    <div class="status-card">
-        <div style="font-size: 14px; color: #64748b; margin-bottom: 8px; font-weight: 500;">System Accuracy</div>
-        <div style="font-size: 18px; font-weight: 700; color: #dc2626;">89.2%</div>
-        <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Precision Level</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# =======================
 # KPI CARDS - TOP ROW
 # =======================
 st.markdown('<div class="section-header">📊 System Performance Overview</div>', unsafe_allow_html=True)
 
-col1, col2, col3, col4 = st.columns(4)
+col1, col2 = st.columns(2)
 
 with col1:
     st.markdown("""
@@ -336,22 +282,6 @@ with col2:
     <div class="kpi-card">
         <div class="kpi-value">89.2%</div>
         <div class="kpi-label">Model Accuracy</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col3:
-    st.markdown("""
-    <div class="kpi-card">
-        <div class="kpi-value">34.5%</div>
-        <div class="kpi-label">Diabetes Prevalence</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col4:
-    st.markdown("""
-    <div class="kpi-card">
-        <div class="kpi-value">8</div>
-        <div class="kpi-label">Clinical Features</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -394,58 +324,6 @@ with col_main1:
                           help="Age in years")
             st.markdown('</div>', unsafe_allow_html=True)
 
-    # =======================
-    # DATA VISUALIZATION
-    # =======================
-    st.markdown('<div class="section-header">📈 Feature Importance Analysis</div>', unsafe_allow_html=True)
-    
-    # Load data and show feature importance
-    df = load_data()
-    
-    col_viz1, col_viz2 = st.columns(2)
-    
-    with col_viz1:
-        st.markdown("""
-        <div class="metric-container">
-            <div style="font-size: 18px; color: #1e293b; margin-bottom: 15px; font-weight: 600;">Feature Importance</div>
-        """, unsafe_allow_html=True)
-        
-        # Calculate feature importance
-        rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
-        X = df.drop('Outcome', axis=1)
-        y = df['Outcome']
-        rf_model.fit(X, y)
-        
-        feature_importance = pd.DataFrame({
-            'Feature': X.columns,
-            'Importance': rf_model.feature_importances_
-        }).sort_values('Importance', ascending=True)
-        
-        # Create horizontal bar chart
-        fig, ax = plt.subplots(figsize=(10, 6))
-        ax.barh(feature_importance['Feature'], feature_importance['Importance'], color='#dc2626')
-        ax.set_xlabel('Importance Score')
-        ax.set_title('Feature Importance in Diabetes Prediction')
-        plt.tight_layout()
-        st.pyplot(fig)
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    with col_viz2:
-        st.markdown("""
-        <div class="metric-container">
-            <div style="font-size: 18px; color: #1e293b; margin-bottom: 15px; font-weight: 600;">Risk Factor Correlation</div>
-        """, unsafe_allow_html=True)
-        
-        # Create correlation heatmap
-        fig, ax = plt.subplots(figsize=(10, 6))
-        correlation_matrix = df.corr()
-        sns.heatmap(correlation_matrix, annot=True, cmap='RdYlGn', center=0, ax=ax)
-        ax.set_title('Feature Correlation Matrix')
-        plt.tight_layout()
-        st.pyplot(fig)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-with col_main2:
     # =======================
     # PREDICTION PANEL
     # =======================
@@ -532,106 +410,3 @@ with col_main2:
                 </div>
             </div>
             """, unsafe_allow_html=True)
-
-    # =======================
-    # MODEL INFORMATION
-    # =======================
-    st.markdown('<div class="section-header">🤖 Predictive Model Information</div>', unsafe_allow_html=True)
-    
-    col_model1, col_model2 = st.columns(2)
-    
-    with col_model1:
-        st.markdown("""
-        <div class="kpi-card-secondary">
-            <div class="kpi-value-secondary">89.2%</div>
-            <div class="kpi-label-secondary">Accuracy Rate</div>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col_model2:
-        st.markdown("""
-        <div class="kpi-card-secondary">
-            <div class="kpi-value-secondary">3.1%</div>
-            <div class="kpi-label-secondary">Margin of Error</div>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    st.markdown("""
-    <div class="metric-container">
-        <div style="font-size: 16px; color: #64748b; margin-bottom: 12px; font-weight: 600;">Key Clinical Factors:</div>
-        <div style="font-size: 14px; color: #475569; line-height: 1.8; font-weight: 500;">
-        • Glucose level<br>
-        • Body Mass Index (BMI)<br>
-        • Age<br>
-        • Diabetes pedigree function<br>
-        • Number of pregnancies<br>
-        • Insulin level<br>
-        • Blood pressure<br>
-        • Skin thickness
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# =======================
-# BOTTOM ROW - ADDITIONAL METRICS
-# =======================
-st.markdown('<div class="section-header">📋 Model Performance Details</div>', unsafe_allow_html=True)
-
-col_bottom1, col_bottom2, col_bottom3 = st.columns(3)
-
-with col_bottom1:
-    st.markdown("""
-    <div class="metric-container">
-        <div style="font-size: 16px; color: #64748b; margin-bottom: 15px; font-weight: 600;">Dataset Information</div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500;">Total Patients</span>
-            <span style="font-size: 14px; font-weight: 700; color: #dc2626;">1,000 records</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500;">Clinical Features</span>
-            <span style="font-size: 14px; font-weight: 700; color: #dc2626;">8 features</span>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500;">Data Balance</span>
-            <span style="font-size: 14px; font-weight: 700; color: #059669;">65.5% / 34.5%</span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col_bottom2:
-    st.markdown("""
-    <div class="metric-container">
-        <div style="font-size: 16px; color: #64748b; margin-bottom: 15px; font-weight: 600;">Model Performance</div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500">Accuracy</span>
-            <span style="font-size: 14px; font-weight: 700; color: #059669;">89.2%</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500">Precision</span>
-            <span style="font-size: 14px; font-weight: 700; color: #059669;">87.8%</span>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500">Recall</span>
-            <span style="font-size: 14px; font-weight: 700; color: #059669;">85.6%</span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col_bottom3:
-    st.markdown("""
-    <div class="metric-container">
-        <div style="font-size: 16px; color: #64748b; margin-bottom: 15px; font-weight: 600;">System Information</div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500;">Response Time</span>
-            <span style="font-size: 14px; font-weight: 700; color: #dc2626;">&lt; 1 second</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500;">Availability</span>
-            <span style="font-size: 14px; font-weight: 700; color: #dc2626;">99.9%</span>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500;">Model Type</span>
-            <span style="font-size: 14px; font-weight: 700; color: #dc2626;">Ensemble Voting</span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
