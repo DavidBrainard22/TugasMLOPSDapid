@@ -428,7 +428,7 @@ with col_main1:
         ax.set_title('Feature Importance in Diabetes Prediction')
         plt.tight_layout()
         st.pyplot(fig)
-       st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
     
     with col_viz2:
         st.markdown("""
