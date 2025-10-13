@@ -349,21 +349,6 @@ with col_main1:
         plt.tight_layout()
         st.pyplot(fig)
         st.markdown('</div>', unsafe_allow_html=True)
-    
-    with col_viz2:
-        st.markdown("""
-        <div class="metric-container">
-            <div style="font-size: 18px; color: #1e293b; margin-bottom: 15px; font-weight: 600;">Risk Factor Correlation</div>
-        """, unsafe_allow_html=True)
-        
-        # Create correlation heatmap
-        fig, ax = plt.subplots(figsize=(10, 6))
-        correlation_matrix = df.corr()
-        sns.heatmap(correlation_matrix, annot=True, cmap='RdYlGn', center=0, ax=ax)
-        ax.set_title('Feature Correlation Matrix')
-        plt.tight_layout()
-        st.pyplot(fig)
-        st.markdown('</div>', unsafe_allow_html=True)
 
 with col_main2:
     # =======================
