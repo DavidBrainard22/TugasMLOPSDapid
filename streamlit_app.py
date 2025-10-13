@@ -323,6 +323,12 @@ with col_main1:
     df = load_data()
     
     col_viz1, col_viz2 = st.columns(2)
+
+    with col_viz1:
+        st.markdown("""
+        <div class="metric-container">
+            <div style="font-size: 18px; color: #1e293b; margin-bottom: 15px; font-weight: 600;">Feature Importance</div>
+        """, unsafe_allow_html=True)
         
         # Calculate feature importance
         rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
