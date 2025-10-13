@@ -390,6 +390,31 @@ with col_main2:
             prediction_proba = model.predict_proba(input_scaled)[0]
             
             diabetes_probability = prediction_proba[1] * 100
+
+             # Risk indicator
+            if diabetes_probability >= 70:
+                risk_color = "#dc2626"
+                risk_text = "HIGH RISK OF DIABETES"
+                recommendation = "🔴 Immediate medical consultation recommended. High probability of diabetes detected."
+            elif diabetes_probability >= 40:
+                risk_color = "#ea580c"
+                risk_text = "MODERATE RISK OF DIABETES"
+                recommendation = "🟡 Regular monitoring and lifestyle changes recommended. Consult healthcare provider."
+            else:
+                risk_color = "#16a34a"
+                risk_text = "LOW RISK OF DIABETES"
+                recommendation = "🟢 Maintain healthy lifestyle. Regular check-ups recommended."
+            
+            st.markdown(f"""
+                <div style="background-color: {risk_color}20; border: 2px solid {risk_color}40; border-radius: 10px; padding: 15px; margin: 20px 0;">
+                    <div style="font-size: 18px; font-weight: 700; color: {risk_color}; text-align: center;">{risk_text}</div>
+                </div>
+                <div style="font-size: 14px; color: #475569; text-align: center; line-height: 1.6; font-weight: 500;">
+                    {recommendation}
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
             
             # Additional metrics
             col_metric1, col_metric2 = st.columns(2)
