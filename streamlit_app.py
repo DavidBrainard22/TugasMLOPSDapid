@@ -276,47 +276,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =======================
-# SYSTEM STATUS
-# =======================
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    st.markdown("""
-    <div class="status-card">
-        <div style="font-size: 14px; color: #64748b; margin-bottom: 8px; font-weight: 500;">System Status</div>
-        <div style="font-size: 18px; font-weight: 700; color: #059669;">🟢 Active & Optimal</div>
-        <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Real-time Monitoring</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col2:
-    st.markdown("""
-    <div class="status-card">
-        <div style="font-size: 14px; color: #64748b; margin-bottom: 8px; font-weight: 500;">Model Version</div>
-        <div style="font-size: 18px; font-weight: 700; color: #dc2626;">v3.1.0</div>
-        <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Ensemble Certified</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col3:
-    st.markdown("""
-    <div class="status-card">
-        <div style="font-size: 14px; color: #64748b; margin-bottom: 8px; font-weight: 500;">Dataset</div>
-        <div style="font-size: 18px; font-weight: 700; color: #7c3aed;">1,000 Patients</div>
-        <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Medical Records</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col4:
-    st.markdown("""
-    <div class="status-card">
-        <div style="font-size: 14px; color: #64748b; margin-bottom: 8px; font-weight: 500;">System Accuracy</div>
-        <div style="font-size: 18px; font-weight: 700; color: #dc2626;">89.2%</div>
-        <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Precision Level</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# =======================
 # MAIN SECTION - 2 COLUMNS
 # =======================
 col_main1, col_main2 = st.columns([2, 1])
