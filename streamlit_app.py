@@ -317,45 +317,6 @@ with col4:
     """, unsafe_allow_html=True)
 
 # =======================
-# KPI CARDS - TOP ROW
-# =======================
-st.markdown('<div class="section-header">📊 System Performance Overview</div>', unsafe_allow_html=True)
-
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    st.markdown("""
-    <div class="kpi-card">
-        <div class="kpi-value">1,000</div>
-        <div class="kpi-label">Patient Records</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col2:
-    st.markdown("""
-    <div class="kpi-card">
-        <div class="kpi-value">89.2%</div>
-        <div class="kpi-label">Model Accuracy</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col3:
-    st.markdown("""
-    <div class="kpi-card">
-        <div class="kpi-value">34.5%</div>
-        <div class="kpi-label">Diabetes Prevalence</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col4:
-    st.markdown("""
-    <div class="kpi-card">
-        <div class="kpi-value">8</div>
-        <div class="kpi-label">Clinical Features</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# =======================
 # MAIN SECTION - 2 COLUMNS
 # =======================
 col_main1, col_main2 = st.columns([2, 1])
