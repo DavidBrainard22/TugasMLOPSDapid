@@ -6,8 +6,6 @@ import seaborn as sns
 from sklearn.ensemble import VotingClassifier, RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 import warnings
@@ -27,25 +25,23 @@ st.set_page_config(
 # =======================
 st.markdown("""
 <style>
-    /* Main background */
+    /* Background Gradient */
     .main {
         background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
     }
     
-    /* Header styling */
+    /* Header Styling */
     .main-header {
-        font-size: 32px;
-        font-weight: 800;
+        font-size: 36px;
+        font-weight: 900;
         color: #1e3a8a;
-        margin-bottom: 25px;
-        padding: 25px;
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 30px;
         background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
         border-radius: 15px;
         box-shadow: 0 8px 16px rgba(30, 64, 175, 0.15);
-        border: 2px solid #e2e8f0;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
+        border: 3px solid #e2e8f0;
     }
     
     .main-header::before {
@@ -54,82 +50,60 @@ st.markdown("""
         top: 0;
         left: 0;
         right: 0;
-        height: 4px;
+        height: 5px;
         background: linear-gradient(90deg, #dc2626 0%, #ea580c 50%, #16a34a 100%);
     }
-    
+
     /* KPI Cards */
     .kpi-card {
         background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%);
         border-radius: 12px;
-        padding: 25px;
+        padding: 30px;
         color: white;
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         border: none;
     }
-    
+
     .kpi-value {
-        font-size: 36px;
-        font-weight: 800;
+        font-size: 40px;
+        font-weight: 900;
         margin-bottom: 8px;
     }
-    
+
     .kpi-label {
-        font-size: 16px;
+        font-size: 18px;
         opacity: 0.95;
-        font-weight: 500;
+        font-weight: 600;
     }
-    
-    /* Secondary KPI Cards */
-    .kpi-card-secondary {
-        background: white;
-        border-radius: 12px;
-        padding: 25px;
-        border-left: 5px solid #dc2626;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-        border-right: 1px solid #e2e8f0;
-        border-top: 1px solid #e2e8f0;
-        border-bottom: 1px solid #e2e8f0;
-    }
-    
-    .kpi-value-secondary {
-        font-size: 28px;
-        font-weight: 800;
-        color: #dc2626;
-        margin-bottom: 8px;
-    }
-    
-    .kpi-label-secondary {
-        font-size: 14px;
-        color: #64748b;
-        font-weight: 500;
-    }
-    
-    /* Section headers */
-    .section-header {
-        font-size: 22px;
-        font-weight: 700;
-        color: #1e293b;
-        margin: 25px 0 20px 0;
-        padding: 18px 20px;
+
+    /* Status Indicator */
+    .status-card {
         background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+        padding: 20px;
         border-radius: 12px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
         border: 2px solid #e2e8f0;
-        border-left: 6px solid #dc2626;
-        position: relative;
+        border-left: 5px solid #dc2626;
     }
     
-    .section-header::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, #dc2626 0%, transparent 100%);
+    /* Button Styling */
+    .stButton button {
+        background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 15px 30px;
+        font-weight: 700;
+        font-size: 18px;
+        width: 100%;
+        transition: all 0.3s ease;
     }
-    
+
+    .stButton button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(220, 38, 38, 0.4);
+    }
+
     /* Metric styling */
     .metric-container {
         background: white;
@@ -139,83 +113,18 @@ st.markdown("""
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
         border: 1px solid #e2e8f0;
     }
-    
-    /* Button styling */
-    .stButton button {
-        background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        padding: 15px 30px;
+
+    /* Section headers */
+    .section-header {
+        font-size: 26px;
         font-weight: 700;
-        font-size: 16px;
-        width: 100%;
-        box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
-        transition: all 0.3s ease;
-    }
-    
-    .stButton button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(220, 38, 38, 0.4);
-    }
-    
-    /* Input section styling */
-    .input-section {
-        background: white;
-        border-radius: 12px;
-        padding: 25px;
-        margin: 15px 0;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e2e8f0;
-    }
-    
-    /* Risk indicators */
-    .high-risk {
-        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-        color: white;
+        color: #1e293b;
+        margin: 25px 0 20px 0;
         padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-    }
-    
-    .medium-risk {
-        background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-    }
-    
-    .low-risk {
-        background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-    }
-    
-    /* Status card styling */
-    .status-card {
         background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
-        padding: 20px;
-        border-radius: 12px;
+        border-radius: 15px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-        border: 2px solid #e2e8f0;
-        border-left: 5px solid #dc2626;
-        height: 100%;
-    }
-    
-    /* Copyright styling */
-    .copyright {
-        text-align: center;
-        margin-top: 40px;
-        padding: 20px;
-        color: #64748b;
-        font-size: 14px;
-        font-weight: 500;
-        border-top: 2px solid #e2e8f0;
-        background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-        border-radius: 8px;
+        border-left: 6px solid #dc2626;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -225,11 +134,8 @@ st.markdown("""
 # =======================
 @st.cache_data
 def load_data():
-    # Using sample diabetes data - replace with your actual data loading
     from sklearn.datasets import make_classification
-    import pandas as pd
     
-    # Create sample diabetes-like data
     X, y = make_classification(
         n_samples=1000,
         n_features=8,
@@ -240,12 +146,12 @@ def load_data():
     )
     
     feature_names = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 
-                    'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
+                     'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
     
     df = pd.DataFrame(X, columns=feature_names)
     df['Outcome'] = y
     
-    # Scale features to realistic diabetes data ranges
+    # Adjust feature scales to match realistic ranges for diabetes
     df['Pregnancies'] = (df['Pregnancies'] * 2 + 3).astype(int)
     df['Glucose'] = (df['Glucose'] * 50 + 100).astype(int)
     df['BloodPressure'] = (df['BloodPressure'] * 20 + 70).astype(int)
@@ -257,419 +163,113 @@ def load_data():
     
     return df
 
+# =======================
+# MODEL TRAINING
+# =======================
 @st.cache_resource
 def train_model(df):
-    # Prepare data
     X = df.drop('Outcome', axis=1)
     y = df['Outcome']
     
-    # Split data
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.25, random_state=42, stratify=y
-    )
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42, stratify=y)
     
-    # Standardize features
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
     
-    # Train ensemble model (similar to your analysis)
-    linear_svc = SVC(kernel='linear', C=0.1, gamma=10, probability=True, random_state=42)
-    radial_svm = SVC(kernel='rbf', C=0.1, gamma=10, probability=True, random_state=42)
-    lr = LogisticRegression(C=0.1, random_state=42)
-    
-    ensemble_model = VotingClassifier(
+    model = VotingClassifier(
         estimators=[
-            ('Radial_svm', radial_svm), 
-            ('Logistic Regression', lr),
-            ('Linear_svm', linear_svc)
+            ('SVC', SVC(kernel='linear', C=0.1, gamma=10, probability=True, random_state=42)),
+            ('LR', LogisticRegression(C=0.1, random_state=42)),
+            ('RF', RandomForestClassifier(n_estimators=100, random_state=42))
         ],
-        voting='soft', 
-        weights=[2, 1, 3]
+        voting='soft'
     )
     
-    ensemble_model.fit(X_train_scaled, y_train)
+    model.fit(X_train_scaled, y_train)
     
-    return ensemble_model, scaler, X_test_scaled, y_test
+    return model, scaler, X_test_scaled, y_test
 
 # =======================
 # DASHBOARD HEADER
 # =======================
 st.markdown("""
 <div class="main-header">
-    <div style="font-size: 28px; color: #dc2626; margin-bottom: 8px;">DIABETES PREDICTION SYSTEM</div>
-    <div style="font-size: 16px; color: #64748b; font-weight: 500;">Advanced Machine Learning for Early Diabetes Detection and Risk Assessment</div>
+    <div>🩺 Diabetes Prediction System</div>
+    <div>Advanced Machine Learning for Early Diabetes Detection</div>
 </div>
 """, unsafe_allow_html=True)
 
 # =======================
-# SYSTEM STATUS
+# KPI AND STATUS CARD
 # =======================
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3 = st.columns(3)
 
 with col1:
     st.markdown("""
     <div class="status-card">
-        <div style="font-size: 14px; color: #64748b; margin-bottom: 8px; font-weight: 500;">System Status</div>
-        <div style="font-size: 18px; font-weight: 700; color: #059669;">🟢 Active & Optimal</div>
-        <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Real-time Monitoring</div>
+        <div style="font-size: 18px;">System Status</div>
+        <div style="font-size: 22px; font-weight: 700; color: #16a34a;">🟢 Active & Optimal</div>
     </div>
     """, unsafe_allow_html=True)
 
 with col2:
     st.markdown("""
     <div class="status-card">
-        <div style="font-size: 14px; color: #64748b; margin-bottom: 8px; font-weight: 500;">Model Version</div>
-        <div style="font-size: 18px; font-weight: 700; color: #dc2626;">v3.1.0</div>
-        <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Ensemble Certified</div>
+        <div style="font-size: 18px;">Model Version</div>
+        <div style="font-size: 22px; font-weight: 700; color: #dc2626;">v3.0.1</div>
     </div>
     """, unsafe_allow_html=True)
 
 with col3:
     st.markdown("""
     <div class="status-card">
-        <div style="font-size: 14px; color: #64748b; margin-bottom: 8px; font-weight: 500;">Dataset</div>
-        <div style="font-size: 18px; font-weight: 700; color: #7c3aed;">1,000 Patients</div>
-        <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Medical Records</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col4:
-    st.markdown("""
-    <div class="status-card">
-        <div style="font-size: 14px; color: #64748b; margin-bottom: 8px; font-weight: 500;">System Accuracy</div>
-        <div style="font-size: 18px; font-weight: 700; color: #dc2626;">89.2%</div>
-        <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Precision Level</div>
+        <div style="font-size: 18px;">Data Size</div>
+        <div style="font-size: 22px; font-weight: 700; color: #7c3aed;">1,000 Records</div>
     </div>
     """, unsafe_allow_html=True)
 
 # =======================
-# KPI CARDS - TOP ROW
+# PREDICTION SECTION
 # =======================
-st.markdown('<div class="section-header">📊 System Performance Overview</div>', unsafe_allow_html=True)
+st.markdown('<div class="section-header">💡 Prediction Panel</div>', unsafe_allow_html=True)
 
-col1, col2, col3, col4 = st.columns(4)
+# Input Fields
+pregnancies = st.slider("Pregnancies", 0, 20, 5)
+glucose = st.slider("Glucose Level", 50, 200, 120)
+blood_pressure = st.slider("Blood Pressure", 40, 120, 70)
+skin_thickness = st.slider("Skin Thickness", 10, 60, 30)
+insulin = st.slider("Insulin Level", 0, 300, 80)
+bmi = st.slider("BMI", 15.0, 40.0, 25.5)
+diabetes_pedigree = st.slider("Diabetes Pedigree Function", 0.0, 2.5, 0.5)
+age = st.slider("Age", 18, 80, 33)
 
-with col1:
-    st.markdown("""
-    <div class="kpi-card">
-        <div class="kpi-value">1,000</div>
-        <div class="kpi-label">Patient Records</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col2:
-    st.markdown("""
-    <div class="kpi-card">
-        <div class="kpi-value">89.2%</div>
-        <div class="kpi-label">Model Accuracy</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col3:
-    st.markdown("""
-    <div class="kpi-card">
-        <div class="kpi-value">34.5%</div>
-        <div class="kpi-label">Diabetes Prevalence</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col4:
-    st.markdown("""
-    <div class="kpi-card">
-        <div class="kpi-value">8</div>
-        <div class="kpi-label">Clinical Features</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# =======================
-# MAIN SECTION - 2 COLUMNS
-# =======================
-col_main1, col_main2 = st.columns([2, 1])
-
-with col_main1:
-    # =======================
-    # INPUT FEATURES
-    # =======================
-    st.markdown('<div class="section-header">🩺 Patient Clinical Parameters</div>', unsafe_allow_html=True)
-    
-    # Container for inputs
-    with st.container():
-        col_input1, col_input2 = st.columns(2)
-        
-        with col_input1:
-            st.markdown('<div class="input-section">', unsafe_allow_html=True)
-            pregnancies = st.slider('Number of Pregnancies', 0, 15, 2, 
-                                  help="Number of times pregnant")
-            glucose = st.slider('Glucose Level (mg/dL)', 50, 200, 120, 
-                              help="Plasma glucose concentration 2 hours in oral glucose tolerance test")
-            blood_pressure = st.slider('Blood Pressure (mm Hg)', 40, 120, 70, 
-                                     help="Diastolic blood pressure")
-            skin_thickness = st.slider('Skin Thickness (mm)', 10, 60, 25, 
-                                     help="Triceps skin fold thickness")
-            st.markdown('</div>', unsafe_allow_html=True)
-            
-        with col_input2:
-            st.markdown('<div class="input-section">', unsafe_allow_html=True)
-            insulin = st.slider('Insulin Level (mu U/ml)', 0, 300, 80, 
-                              help="2-Hour serum insulin")
-            bmi = st.slider('Body Mass Index (BMI)', 15.0, 45.0, 25.5, 
-                          help="Body mass index (weight in kg/(height in m)^2)")
-            diabetes_pedigree = st.slider('Diabetes Pedigree Function', 0.08, 2.5, 0.45, 
-                                        help="Diabetes pedigree function")
-            age = st.slider('Age (years)', 20, 80, 35, 
-                          help="Age in years")
-            st.markdown('</div>', unsafe_allow_html=True)
-
-    # =======================
-    # DATA VISUALIZATION
-    # =======================
-    st.markdown('<div class="section-header">📈 Feature Importance Analysis</div>', unsafe_allow_html=True)
-    
-    # Load data and show feature importance
+# Predict on button click
+if st.button("Run Diabetes Risk Assessment"):
     df = load_data()
+    model, scaler, X_test_scaled, y_test = train_model(df)
     
-    col_viz1, col_viz2 = st.columns(2)
+    input_data = np.array([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree, age]])
+    input_scaled = scaler.transform(input_data)
     
-    with col_viz1:
-        st.markdown("""
-        <div class="metric-container">
-            <div style="font-size: 18px; color: #1e293b; margin-bottom: 15px; font-weight: 600;">Feature Importance</div>
-        """, unsafe_allow_html=True)
-        
-        # Calculate feature importance
-        rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
-        X = df.drop('Outcome', axis=1)
-        y = df['Outcome']
-        rf_model.fit(X, y)
-        
-        feature_importance = pd.DataFrame({
-            'Feature': X.columns,
-            'Importance': rf_model.feature_importances_
-        }).sort_values('Importance', ascending=True)
-        
-        # Create horizontal bar chart
-        fig, ax = plt.subplots(figsize=(10, 6))
-        ax.barh(feature_importance['Feature'], feature_importance['Importance'], color='#dc2626')
-        ax.set_xlabel('Importance Score')
-        ax.set_title('Feature Importance in Diabetes Prediction')
-        plt.tight_layout()
-        st.pyplot(fig)
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    with col_viz2:
-        st.markdown("""
-        <div class="metric-container">
-            <div style="font-size: 18px; color: #1e293b; margin-bottom: 15px; font-weight: 600;">Risk Factor Correlation</div>
-        """, unsafe_allow_html=True)
-        
-        # Create correlation heatmap
-        fig, ax = plt.subplots(figsize=(10, 6))
-        correlation_matrix = df.corr()
-        sns.heatmap(correlation_matrix, annot=True, cmap='RdYlGn', center=0, ax=ax)
-        ax.set_title('Feature Correlation Matrix')
-        plt.tight_layout()
-        st.pyplot(fig)
-        st.markdown('</div>', unsafe_allow_html=True)
+    prediction_proba = model.predict_proba(input_scaled)[0]
+    diabetes_prob = prediction_proba[1] * 100
 
-with col_main2:
-    # =======================
-    # PREDICTION PANEL
-    # =======================
-    st.markdown('<div class="section-header">🎯 Prediction Results</div>', unsafe_allow_html=True)
+    st.markdown(f"**Diabetes Probability**: {diabetes_prob:.2f}%")
     
-    # Load model and make prediction
-    model, scaler, X_test, y_test = train_model(df)
+    if diabetes_prob >= 70:
+        risk_status = "High Risk"
+        risk_color = "#dc2626"
+    elif diabetes_prob >= 40:
+        risk_status = "Moderate Risk"
+        risk_color = "#ea580c"
+    else:
+        risk_status = "Low Risk"
+        risk_color = "#16a34a"
     
-    # Container for prediction results
-    with st.container():
-        # Prediction button
-        if st.button('Run Diabetes Risk Assessment', type='primary'):
-            # Prepare input data
-            input_data = np.array([[pregnancies, glucose, blood_pressure, skin_thickness, 
-                                  insulin, bmi, diabetes_pedigree, age]])
-            
-            # Scale input data
-            input_scaled = scaler.transform(input_data)
-            
-            # Make prediction
-            prediction = model.predict(input_scaled)[0]
-            prediction_proba = model.predict_proba(input_scaled)[0]
-            
-            diabetes_probability = prediction_proba[1] * 100
-            
-            # Display prediction results
-            st.markdown(f"""
-            <div class="metric-container">
-                <div style="text-align: center; padding: 25px;">
-                    <div style="font-size: 18px; color: #64748b; margin-bottom: 15px; font-weight: 500;">Diabetes Probability</div>
-                    <div style="font-size: 48px; font-weight: 800; color: #dc2626; margin-bottom: 20px;">{diabetes_probability:.1f}%</div>
-            """, unsafe_allow_html=True)
-            
-            # Risk indicator
-            if diabetes_probability >= 70:
-                risk_color = "#dc2626"
-                risk_text = "HIGH RISK OF DIABETES"
-                recommendation = "🔴 Immediate medical consultation recommended. High probability of diabetes detected."
-            elif diabetes_probability >= 40:
-                risk_color = "#ea580c"
-                risk_text = "MODERATE RISK OF DIABETES"
-                recommendation = "🟡 Regular monitoring and lifestyle changes recommended. Consult healthcare provider."
-            else:
-                risk_color = "#16a34a"
-                risk_text = "LOW RISK OF DIABETES"
-                recommendation = "🟢 Maintain healthy lifestyle. Regular check-ups recommended."
-            
-            st.markdown(f"""
-                <div style="background-color: {risk_color}20; border: 2px solid {risk_color}40; border-radius: 10px; padding: 15px; margin: 20px 0;">
-                    <div style="font-size: 18px; font-weight: 700; color: {risk_color}; text-align: center;">{risk_text}</div>
-                </div>
-                <div style="font-size: 14px; color: #475569; text-align: center; line-height: 1.6; font-weight: 500;">
-                    {recommendation}
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # Additional metrics
-            col_metric1, col_metric2 = st.columns(2)
-            with col_metric1:
-                st.markdown(f"""
-                <div class="kpi-card-secondary">
-                    <div class="kpi-value-secondary">{prediction_proba[0]*100:.1f}%</div>
-                    <div class="kpi-label-secondary">No Diabetes Probability</div>
-                </div>
-                """, unsafe_allow_html=True)
-            
-            with col_metric2:
-                st.markdown(f"""
-                <div class="kpi-card-secondary">
-                    <div class="kpi-value-secondary">{prediction_proba[1]*100:.1f}%</div>
-                    <div class="kpi-label-secondary">Diabetes Probability</div>
-                </div>
-                """, unsafe_allow_html=True)
-        else:
-            # Placeholder before prediction is run
-            st.markdown("""
-            <div class="metric-container">
-                <div style="text-align: center; padding: 50px 25px;">
-                    <div style="font-size: 18px; color: #64748b; margin-bottom: 20px; font-weight: 500;">Click Risk Assessment Button</div>
-                    <div style="font-size: 16px; color: #94a3b8; line-height: 1.6;">
-                        The system will analyze clinical parameters and provide diabetes risk prediction based on ensemble machine learning model
-                    </div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-
-    # =======================
-    # MODEL INFORMATION
-    # =======================
-    st.markdown('<div class="section-header">🤖 Predictive Model Information</div>', unsafe_allow_html=True)
-    
-    col_model1, col_model2 = st.columns(2)
-    
-    with col_model1:
-        st.markdown("""
-        <div class="kpi-card-secondary">
-            <div class="kpi-value-secondary">89.2%</div>
-            <div class="kpi-label-secondary">Accuracy Rate</div>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col_model2:
-        st.markdown("""
-        <div class="kpi-card-secondary">
-            <div class="kpi-value-secondary">3.1%</div>
-            <div class="kpi-label-secondary">Margin of Error</div>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    st.markdown("""
-    <div class="metric-container">
-        <div style="font-size: 16px; color: #64748b; margin-bottom: 12px; font-weight: 600;">Key Clinical Factors:</div>
-        <div style="font-size: 14px; color: #475569; line-height: 1.8; font-weight: 500;">
-        • Glucose level<br>
-        • Body Mass Index (BMI)<br>
-        • Age<br>
-        • Diabetes pedigree function<br>
-        • Number of pregnancies<br>
-        • Insulin level<br>
-        • Blood pressure<br>
-        • Skin thickness
-        </div>
+    st.markdown(f"""
+    <div style="background: {risk_color}; padding: 15px; color: white; border-radius: 10px;">
+        <div style="font-size: 24px; font-weight: 700;">{risk_status}</div>
+        <div style="font-size: 16px;">Risk Assessment Completed</div>
     </div>
     """, unsafe_allow_html=True)
-
-# =======================
-# BOTTOM ROW - ADDITIONAL METRICS
-# =======================
-st.markdown('<div class="section-header">📋 Model Performance Details</div>', unsafe_allow_html=True)
-
-col_bottom1, col_bottom2, col_bottom3 = st.columns(3)
-
-with col_bottom1:
-    st.markdown("""
-    <div class="metric-container">
-        <div style="font-size: 16px; color: #64748b; margin-bottom: 15px; font-weight: 600;">Dataset Information</div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500;">Total Patients</span>
-            <span style="font-size: 14px; font-weight: 700; color: #dc2626;">1,000 records</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500;">Clinical Features</span>
-            <span style="font-size: 14px; font-weight: 700; color: #dc2626;">8 features</span>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500;">Data Balance</span>
-            <span style="font-size: 14px; font-weight: 700; color: #059669;">65.5% / 34.5%</span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col_bottom2:
-    st.markdown("""
-    <div class="metric-container">
-        <div style="font-size: 16px; color: #64748b; margin-bottom: 15px; font-weight: 600;">Model Performance</div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500">Accuracy</span>
-            <span style="font-size: 14px; font-weight: 700; color: #059669;">89.2%</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500">Precision</span>
-            <span style="font-size: 14px; font-weight: 700; color: #059669;">87.8%</span>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500">Recall</span>
-            <span style="font-size: 14px; font-weight: 700; color: #059669;">85.6%</span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col_bottom3:
-    st.markdown("""
-    <div class="metric-container">
-        <div style="font-size: 16px; color: #64748b; margin-bottom: 15px; font-weight: 600;">System Information</div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500;">Response Time</span>
-            <span style="font-size: 14px; font-weight: 700; color: #dc2626;">&lt; 1 second</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500;">Availability</span>
-            <span style="font-size: 14px; font-weight: 700; color: #dc2626;">99.9%</span>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-            <span style="font-size: 14px; color: #475569; font-weight: 500;">Model Type</span>
-            <span style="font-size: 14px; font-weight: 700; color: #dc2626;">Ensemble Voting</span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# =======================
-# COPYRIGHT
-# =======================
-st.markdown("""
-<div class="copyright">
-    <div style="font-size: 16px; font-weight: 700; color: #dc2626; margin-bottom: 8px;">Diabetes Prediction System</div>
-    <div style="font-size: 14px; color: #64748b;">© 2024 All Rights Reserved | Medical AI Diagnostics</div>
-    <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Advanced Healthcare Analytics for Better Patient Outcomes</div>
-</div>
-""", unsafe_allow_html=True)
